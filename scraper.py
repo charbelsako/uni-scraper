@@ -14,7 +14,6 @@ def get_course_list():
   browser.implicitly_wait(3) # wait for three seconds
   return browser.find_elements_by_css_selector('li.type_course.depth_3 > p > a')
   
-
 # SAFELY READ YOUR PASSWORD WITHOUT ANYONE SEEING IT
 import configparser
 config = configparser.ConfigParser()
@@ -41,11 +40,7 @@ course_list = get_course_list() # Get the links of all courses
 # If I click I lose my links. Or do I?
 # yes. I lose my links. :'(
 # I need to go back each time
-# course_list[0].click()
-# browser.implicitly_wait(5)
-# print(len(course_list))
-
-for i in range(num_courses):
+for i in range(len(course_list)):
   course_list[i].click()
   browser.implicitly_wait(3)
   # todo later. Download the files
