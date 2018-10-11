@@ -3,17 +3,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-# downloads pdf files.
-def download_pdf(lnk):
-  options = webdriver.ChromeOptions()
-  download_folder = "C:\\"    
-  profile = {"plugins.plugins_list": [{"enabled": False, "name": "Chrome PDF Viewer"}], 
-  "download.default_directory": download_folder,
-  "download.extensions_to_open": ""}
-  options.add_experimental_option("prefs", profile)
-  print("Downloading file from link: {}".format(lnk))
-  driver = webdriver.Chrome(chrome_options = options)
-  driver.get(lnk)
+
+# options to be able to download pdf files
+options = webdriver.ChromeOptions()
+download_folder = "C:\\Users\\sarkis\\Desktop\\bot test"    
+profile = {"plugins.plugins_list": [{"enabled": False, "name": "Chrome PDF Viewer"}], 
+"download.default_directory": download_folder,
+"download.extensions_to_open": ""}
+options.add_experimental_option("prefs", profile)
 
 # gets the course list.
 def get_course_list():
@@ -24,10 +21,9 @@ def get_course_list():
 def download_course_content():
   # Gets the links for all of the content.
   files = browser.find_elements_by_css_selector('.activityinstance > a')
-  links = [file for file in files if 'resource' in file.get_attribute('href')]
+  links = [file.get_attribute('href') for file in files]
   file_types = browser.find_elements_by_css_selector('.iconlarge')
   ftypes = []
-
   
   for file_type in file_types:
     src = file_type.get_attribute('src')
@@ -48,17 +44,18 @@ def download_course_content():
 
   # Iterate over the links
   for i in range(len(files)):
-    print(f"Length of files is: {len(files)}")
-    print(f"Length of file_types is: {len(file_types)}")
-    print(f"Length of ftypes is: {len(ftypes)}")
-    # check if file already exists.
+    # TO-DO: check if file already exists.
     if ftypes[i] is 'pdf':
-      # download_pdf(links[i])
-      print('Download as pdf')
-    else:
-      print('Normal download')
-      # browser.get(links[i]) # download the file
-      # browser.back()
+      browser.get(links[i])
+    elif ftypes[i] is 'document':
+      browser.get(links[i]) # download the file
+    elif ftypes[i] is 'powerpoint':
+      browser.get(links[i]) # download the file
+    elif ftypes[i] is 'spreadsheet':
+      browser.get(links[i]) # download the file
+    elif ftypes[i] is '':
+      browser.get(links[i]) # download the file
+
 
 # SAFELY READ YOUR PASSWORD WITHOUT ANYONE SEEING IT
 import configparser
@@ -67,7 +64,7 @@ config.read('config.ini')
 username = config['SECRET']['USERNAME']
 password = config['SECRET']['PASSWORD']
 
-browser = webdriver.Chrome() # start chrome
+browser = webdriver.Chrome(chrome_options = options) # start chrome
 url = 'http://elearning.aut.edu/my/'
 browser.get(url) # navigate to your url
 
