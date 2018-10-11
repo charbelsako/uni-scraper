@@ -2,6 +2,19 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
+
+num_courses = int(input('Enter the number of courses you are registered in: '))
+
+# function to go back and get the course list
+def go_back(to):
+  browser.get(to)
+
+# get the course list
+def get_course_list():
+  browser.implicitly_wait(3) # wait for three seconds
+  return browser.find_elements_by_css_selector('li.type_course.depth_3 > p > a')
+  
+
 # SAFELY READ YOUR PASSWORD WITHOUT ANYONE SEEING IT
 import configparser
 config = configparser.ConfigParser()
@@ -21,16 +34,23 @@ usernameInput.send_keys(username)
 # fill in your password
 passwordInput = browser.find_element_by_id('password')
 passwordInput.send_keys(password)
-# click the login button.
-loginButton = browser.find_element_by_id('loginbtn')
-loginButton.click()
-# Get the links of all courses
-browser.implicitly_wait(5)
-# this works
-# course_list =  browser.find_elements_by_css_selector('li.type_course.depth_3')
-course_list =  browser.find_elements_by_css_selector('li.type_course.depth_3 > p > a')
+loginButton = browser.find_element_by_id('loginbtn') # get the login button
+loginButton.click() # click the login button.
+browser.implicitly_wait(5) # wait for (5 seconds) the page to load
+course_list = get_course_list() # Get the links of all courses 
+# If I click I lose my links. Or do I?
+# yes. I lose my links. :'(
+# I need to go back each time
+# course_list[0].click()
+# browser.implicitly_wait(5)
+# print(len(course_list))
 
-#if I click I lose my links. Or do I?
-course_list[0].click()
-browser.implicitly_wait(5)
-course_list[1].click()
+for i in range(num_courses):
+  course_list[i].click()
+  browser.implicitly_wait(3)
+  # todo later. Download the files
+  go_back(url)
+  browser.implicitly_wait(3)
+  course_list = get_course_list()
+
+  
