@@ -27,7 +27,7 @@ def download_course_content():
   
   for file_type in file_types:
     src = file_type.get_attribute('src')
-    if 'pdf' in src:
+    if 'pdf' not in src:
       ftypes.append('pdf')
     elif 'document' in src:
       ftypes.append('document')
@@ -45,17 +45,8 @@ def download_course_content():
   # Iterate over the links
   for i in range(len(files)):
     # TO-DO: check if file already exists.
-    if ftypes[i] is 'pdf':
+    if ftypes[i] is not 'forum' and ftypes[i] is not 'text':
       browser.get(links[i])
-    elif ftypes[i] is 'document':
-      browser.get(links[i]) # download the file
-    elif ftypes[i] is 'powerpoint':
-      browser.get(links[i]) # download the file
-    elif ftypes[i] is 'spreadsheet':
-      browser.get(links[i]) # download the file
-    elif ftypes[i] is '':
-      browser.get(links[i]) # download the file
-
 
 # SAFELY READ YOUR PASSWORD WITHOUT ANYONE SEEING IT
 import configparser
