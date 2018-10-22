@@ -1,3 +1,4 @@
+import configparser
 import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -14,7 +15,7 @@ options.add_experimental_option("prefs", profile)
 
 # gets the course list.
 def get_course_list():
-  browser.implicitly_wait(3) # wait for three seconds
+  browser.implicitly_wait(5) # wait for three seconds
   return browser.find_elements_by_css_selector('li.type_course.depth_3 > p > a')
 
 # downloads the course content.  
@@ -25,9 +26,10 @@ def download_course_content():
   file_types = browser.find_elements_by_css_selector('.iconlarge')
   ftypes = []
   
+
   for file_type in file_types:
     src = file_type.get_attribute('src')
-    if 'pdf' not in src:
+    if 'pdf' in src:
       ftypes.append('pdf')
     elif 'document' in src:
       ftypes.append('document')
@@ -42,14 +44,17 @@ def download_course_content():
     elif 'powerpoint' in src:
       ftypes.append('powerpoint')
 
+  print(ftypes)
+
   # Iterate over the links
   for i in range(len(files)):
     # TO-DO: check if file already exists.
     if ftypes[i] is not 'forum' and ftypes[i] is not 'text':
       browser.get(links[i])
-
+    else:
+      print("No files downloaded")
+    
 # SAFELY READ YOUR PASSWORD WITHOUT ANYONE SEEING IT
-import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 username = config['SECRET']['USERNAME']
@@ -76,9 +81,9 @@ course_list = get_course_list() # Get the links of all courses
 
 for i in range(len(course_list)): 
   course_list[i].click() # click on each course link
-  browser.implicitly_wait(3) # wait for 3 seconds
+  browser.implicitly_wait(5) # wait for 3 seconds
   download_course_content() # download important content.
   browser.back() # go back to the previous page.
-  browser.implicitly_wait(3) # wait for 3 seconds
+  browser.implicitly_wait(5) # wait for 3 seconds
   course_list = get_course_list() # get the course list again. Because it disappears after clicking on links
   
